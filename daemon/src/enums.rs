@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand, Args, ValueEnum};
+use serde::{Serialize, Deserialize};
 
 #[derive(Parser)]
 pub struct Cli {
@@ -53,8 +54,8 @@ pub enum KeyboardSubcommand {
     Type { text: String },
     Press { key: KeyType },
 }
-
-#[derive(Clone, ValueEnum)]
+ 
+#[derive(Debug, Clone, Serialize, Deserialize, ValueEnum)]
 pub enum KeyType {
     Alt,
     Backspace,
