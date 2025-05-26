@@ -1,1 +1,43 @@
-daemon/target
+# --- Global ---
+.DS_Store
+*.log
+
+# --- Rust (server/) ---
+/server/target/
+/server/.idea/
+/server/.vscode/
+/server/.DS_Store
+**/*.rs.bk
+
+
+# --- Flutter (client/) ---
+/client/.dart_tool/
+/client/.idea/
+/client/.vscode/
+/client/.packages
+/client/build/
+/client/pubspec.lock
+/client/ios/Flutter/Flutter.framework
+/client/ios/Flutter/Flutter.podspec
+/client/ios/Pods/
+/client/ios/.symlinks/
+/client/ios/Flutter/App.framework
+/client/ios/Runner.xcworkspace/
+/client/ios/DerivedData/
+/client/android/.gradle/
+/client/android/app/build/
+/client/.flutter-plugins
+/client/.flutter-plugins-dependencies
+/client/.metadata
+
+# IntelliJ & VS Code
+*.iml
+*.ipr
+*.iws
+
+# --- Optional ---
+# Flutter crash reports
+/client/flutter_*.log
+
+# MacOS
+**/.DS_Store
