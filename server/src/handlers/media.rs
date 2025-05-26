@@ -5,9 +5,9 @@ use crate::models::{MediaPayload, VolumePayload};
 #[axum::debug_handler]
 pub async fn handle_media(Json(payload): Json<MediaPayload>) -> impl IntoResponse {
     let script = match payload.action.as_str() {
-        "playpause" => "key code 179",
-        "next" => "key code 124",
-        "prev" => "key code 123",
+        "playpause" => "pause",
+        "next" => "next track",
+        "prev" => "previous track",
         "stop" => "key code 182",
         _ => return "Invalid media command".into_response(),
     };

@@ -11,14 +11,13 @@ mod enums;
 #[tokio::main]
 async fn main() {
     // Set up address
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 8000));
 
     // Create socket with reuseaddr and reuseport option
     let socket = Socket::new(Domain::IPV4, Type::STREAM, None).unwrap();
 
     socket.set_reuse_address(true).unwrap();
-    socket.set_reuse_port(true).unwrap();  // <-- important!
-
+    socket.set_reuse_port(true).unwrap();  
     socket.bind(&addr.into()).unwrap();
     socket.listen(1024).unwrap();
 

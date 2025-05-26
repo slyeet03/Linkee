@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,7 +25,7 @@ class RemoteApp extends StatelessWidget {
   }
 }
 
-const String serverIp = "http://192.168.0.114:3000"; // your server IP + port
+const String serverIp = "http://192.168.0.114:8000"; // your server IP + port
 
 // Main menu screen
 class MainMenuScreen extends StatelessWidget {
@@ -71,9 +72,14 @@ class _MouseControlScreenState extends State<MouseControlScreen> {
 
   Future<void> moveMouseAbsolute(int x, int y) async {
     try {
-      await http.post(Uri.parse('$serverIp/mouse/move'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"x": $x, "y": $y}');
+      final response = await http.post(
+        Uri.parse('$serverIp/mouse/move'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'x': x, 'y': y}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Mouse move failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Mouse move error: $e');
     }
@@ -81,9 +87,14 @@ class _MouseControlScreenState extends State<MouseControlScreen> {
 
   Future<void> clickMouse(String button) async {
     try {
-      await http.post(Uri.parse('$serverIp/mouse/click'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"button": "$button"}');
+      final response = await http.post(
+        Uri.parse('$serverIp/mouse/click'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'button': button}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Mouse click failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Mouse click error: $e');
     }
@@ -98,11 +109,13 @@ class _MouseControlScreenState extends State<MouseControlScreen> {
           Expanded(
             child: GestureDetector(
               onPanUpdate: (details) {
-                currentX += (details.delta.dx * 3).toInt();
-                currentY += (details.delta.dy * 3).toInt();
+                setState(() {
+                  currentX += (details.delta.dx * 3).toInt();
+                  currentY += (details.delta.dy * 3).toInt();
 
-                if (currentX < 0) currentX = 0;
-                if (currentY < 0) currentY = 0;
+                  if (currentX < 0) currentX = 0;
+                  if (currentY < 0) currentY = 0;
+                });
 
                 moveMouseAbsolute(currentX, currentY);
               },
@@ -152,9 +165,14 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
   Future<void> typeText(String text) async {
     if (text.trim().isEmpty) return;
     try {
-      await http.post(Uri.parse('$serverIp/keyboard/type'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"text": "$text"}');
+      final response = await http.post(
+        Uri.parse('$serverIp/keyboard/type'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'text': text}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Type text failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Type text error: $e');
     }
@@ -163,9 +181,14 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
 
   Future<void> pressKey(String key) async {
     try {
-      await http.post(Uri.parse('$serverIp/keyboard/press'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"key": "$key"}');
+      final response = await http.post(
+        Uri.parse('$serverIp/keyboard/press'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'key': key}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Press key failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Press key error: $e');
     }
@@ -191,17 +214,39 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
               onSubmitted: typeText,
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
               children: [
                 ElevatedButton(
                     onPressed: () => pressKey("Enter"),
                     child: const Text("Enter")),
                 ElevatedButton(
                     onPressed: () => pressKey("Escape"),
-                    child: const Text("Esc")),
+                    child: const Text("Escape")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Backspace"),
+                    child: const Text("Backspace")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Space"),
+                    child: const Text("Space")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Right"),
+                    child: const Text("Right")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Left"),
+                    child: const Text("Left")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Up"),
+                    child: const Text("Up")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Down"),
+                    child: const Text("Down")),
+                ElevatedButton(
+                    onPressed: () => pressKey("Alt"),
+                    child: const Text("Alt")),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -215,9 +260,14 @@ class MediaControlScreen extends StatelessWidget {
 
   Future<void> mediaControl(String action) async {
     try {
-      await http.post(Uri.parse('$serverIp/media/control'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"action": "$action"}');
+      final response = await http.post(
+        Uri.parse('$serverIp/media/control'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'action': action}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Media control failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Media control error: $e');
     }
@@ -233,12 +283,14 @@ class MediaControlScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-                onPressed: () => mediaControl("prev"), child: const Text("Prev")),
+                onPressed: () => mediaControl("prev"),
+                child: const Text("Prev")),
             ElevatedButton(
                 onPressed: () => mediaControl("playpause"),
                 child: const Text("Play/Pause")),
             ElevatedButton(
-                onPressed: () => mediaControl("next"), child: const Text("Next")),
+                onPressed: () => mediaControl("next"),
+                child: const Text("Next")),
           ],
         ),
       ),
@@ -252,9 +304,14 @@ class VolumeControlScreen extends StatelessWidget {
 
   Future<void> volumeControl(String action) async {
     try {
-      await http.post(Uri.parse('$serverIp/volume/control'),
-          headers: {'Content-Type': 'application/json'},
-          body: '{"action": "$action"}');
+      final response = await http.post(
+        Uri.parse('$serverIp/volume/control'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'action': action}),
+      );
+      if (response.statusCode != 200) {
+        debugPrint('Volume control failed: ${response.body}');
+      }
     } catch (e) {
       debugPrint('Volume control error: $e');
     }
