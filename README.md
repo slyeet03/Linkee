@@ -14,6 +14,7 @@ A Flutter mobile app to control your Mac (mouse, keyboard, media, and volume) ov
 ```bash
 cd server
 cargo run
+```
 
 Make sure your Mac's IP is visible to your mobile device and they are on the same Wi-Fi network.
 
