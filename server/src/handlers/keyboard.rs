@@ -36,6 +36,7 @@ pub async fn press_key(Json(payload): Json<PressKeyPayload>) -> Result<impl Into
         KeyType::Space => Key::Space,
         KeyType::Tab => Key::Tab,
         KeyType::Up => Key::UpArrow,
+        KeyType::Enter => Key::Return,
     };
 
     enigo.key(key, Click)
