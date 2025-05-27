@@ -9,6 +9,10 @@ mod handlers;
 mod models;
 mod enums;
 
+// TODO: next media key does not work
+// TODO: add a way to hold modifier keys
+// TODO: add brightness controls
+
 #[tokio::main]
 async fn main() {
     // Initialize logger
