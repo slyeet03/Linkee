@@ -1,18 +1,27 @@
-use axum::{Json, response::IntoResponse};
+use axum::{Json, response::IntoResponse, http::StatusCode};
 use enigo::{Enigo, Key, Settings, Direction::Click, Keyboard};
 use crate::models::{TypeTextPayload, PressKeyPayload};
 use crate::enums::KeyType;
+use tracing::info;
 
-#[axum::debug_handler]
-pub async fn type_text(Json(payload): Json<TypeTextPayload>) -> impl IntoResponse {
-    let mut enigo = Enigo::new(&Settings::default()).unwrap();
-    enigo.text(&payload.text).unwrap();
-    "Typed Text".into_response()
+pub async fn type_text(Json(payload): Json<TypeTextPayload>) -> Result<impl IntoResponse, (StatusCode, String)> {
+    info!("Typing text: {}", payload.text);
+
+    let mut enigo = Enigo::new(&Settings::default())
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Enigo init failed: {}", e)))?;
+
+    enigo.text(&payload.text)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Text typing failed: {}", e)))?;
+
+    Ok("Text typed")
 }
 
-#[axum::debug_handler]
-pub async fn press_key(Json(payload): Json<PressKeyPayload>) -> impl IntoResponse {
-    let mut enigo = Enigo::new(&Settings::default()).unwrap();
+pub async fn press_key(Json(payload): Json<PressKeyPayload>) -> Result<impl IntoResponse, (StatusCode, String)> {
+    info!("Pressing key: {:?}", payload.key);
+
+    let mut enigo = Enigo::new(&Settings::default())
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Enigo init failed: {}", e)))?;
+
     let key = match payload.key {
         KeyType::Alt => Key::Alt,
         KeyType::Backspace => Key::Backspace,
@@ -28,6 +37,9 @@ pub async fn press_key(Json(payload): Json<PressKeyPayload>) -> impl IntoRespons
         KeyType::Tab => Key::Tab,
         KeyType::Up => Key::UpArrow,
     };
-    enigo.key(key, Click).unwrap();
-    "Pressed Key".into_response()
+
+    enigo.key(key, Click)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Key press failed: {}", e)))?;
+
+    Ok("Key pressed")
 }

@@ -3,6 +3,7 @@ use std::net::SocketAddr;
 use axum::serve;
 use tokio::net::TcpListener;
 use socket2::{Socket, Domain, Type};
+use tracing_subscriber; 
 
 mod handlers;
 mod models;
@@ -10,12 +11,14 @@ mod enums;
 
 #[tokio::main]
 async fn main() {
+    // Initialize logger
+    tracing_subscriber::fmt().init(); 
+
     // Set up address
     let addr = SocketAddr::from(([0, 0, 0, 0], 8000));
 
     // Create socket with reuseaddr and reuseport option
     let socket = Socket::new(Domain::IPV4, Type::STREAM, None).unwrap();
-
     socket.set_reuse_address(true).unwrap();
     socket.set_reuse_port(true).unwrap();  
     socket.bind(&addr.into()).unwrap();
@@ -24,6 +27,7 @@ async fn main() {
     // Convert to Tokio listener
     let listener = TcpListener::from_std(socket.into()).unwrap();
 
+    // Define routes
     let app = Router::new()
         .route("/", get(|| async { "Server is running!" }))
         .route("/ping", get(|| async { "pong" }))
