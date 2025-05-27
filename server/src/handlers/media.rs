@@ -16,7 +16,7 @@ pub async fn handle_media(Json(payload): Json<MediaPayload>) -> Result<impl Into
         "next" => {
             Command::new("sh")
                 .arg("-c") 
-                .arg("osascript -e 'tell application \"System Events\" to key code 17'")
+                .arg("osascript -e 'tell application \"System Events\" to key code 101'")
                 .status()
         },
         "prev" => {

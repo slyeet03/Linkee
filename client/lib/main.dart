@@ -135,8 +135,8 @@ class _MouseControlScreenState extends State<MouseControlScreen> {
           child: GestureDetector(
             onPanUpdate: (details) {
               setState(() {
-                currentX += (details.delta.dx * 3).toInt();
-                currentY += (details.delta.dy * 3).toInt();
+                currentX += (details.delta.dx * 2).toInt();
+                currentY += (details.delta.dy * 2).toInt();
                 if (currentX < 0) currentX = 0;
                 if (currentY < 0) currentY = 0;
               });
@@ -163,8 +163,9 @@ class _MouseControlScreenState extends State<MouseControlScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(onPressed: () => clickMouse("left"), child: const Text("Left Click")),
-              ElevatedButton(onPressed: () => clickMouse("right"), child: const Text("Right Click")),
+              ElevatedButton(onPressed: () => clickMouse("left"), child: const Text("Left")),
+              ElevatedButton(onPressed: () => clickMouse("middle"), child: const Text("Middle")),
+              ElevatedButton(onPressed: () => clickMouse("right"), child: const Text("Right")),
             ],
           ),
         ),
@@ -181,6 +182,9 @@ class KeyboardControlScreen extends StatefulWidget {
 
 class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
   final TextEditingController _textController = TextEditingController();
+  
+  // Track which modifier keys are currently held
+  Set<String> _heldModifiers = {};
 
   // Map display text to server keywords
   final Map<String, String> _keyMapping = {
@@ -196,7 +200,11 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
     'Tab': 'Tab',
     'Backspace': 'Backspace',
     'Enter': 'Enter',
+    'Space': 'Space',
   };
+
+  // Modifier keys that can be held
+  final Set<String> _modifierKeys = {'Cmd', 'Option', '^', 'Shift'};
 
   Future<void> typeText(String text) async {
     if (text.trim().isEmpty) return;
@@ -214,16 +222,63 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
 
   Future<void> pressKey(String displayKey) async {
     try {
-      // Get the actual key to send to server
       String actualKey = _keyMapping[displayKey] ?? displayKey;
       
-      await http.post(
-        Uri.parse('$serverIp/keyboard/press'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'key': actualKey}),
-      );
+      if (_modifierKeys.contains(displayKey)) {
+        // Toggle modifier key
+        setState(() {
+          if (_heldModifiers.contains(actualKey)) {
+            _heldModifiers.remove(actualKey);
+          } else {
+            _heldModifiers.add(actualKey);
+          }
+        });
+        
+        // Send modifier toggle to server
+        await http.post(
+          Uri.parse('$serverIp/keyboard/modifier'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'modifier': actualKey,
+            'action': _heldModifiers.contains(actualKey) ? 'hold' : 'release'
+          }),
+        );
+      } else {
+        // Regular key press with any held modifiers
+        if (_heldModifiers.isNotEmpty) {
+          await http.post(
+            Uri.parse('$serverIp/keyboard/combo'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'modifiers': _heldModifiers.toList(),
+              'key': actualKey
+            }),
+          );
+        } else {
+          await http.post(
+            Uri.parse('$serverIp/keyboard/press'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'key': actualKey}),
+          );
+        }
+      }
     } catch (e) {
       debugPrint('Press key error: $e');
+    }
+  }
+
+  // Clear all held modifiers
+  Future<void> clearModifiers() async {
+    try {
+      await http.post(
+        Uri.parse('$serverIp/keyboard/clear-modifiers'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      setState(() {
+        _heldModifiers.clear();
+      });
+    } catch (e) {
+      debugPrint('Clear modifiers error: $e');
     }
   }
 
@@ -244,40 +299,76 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
             decoration: const InputDecoration(labelText: "Type Text"),
             onSubmitted: typeText,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+          
+          // Show held modifiers
+          if (_heldModifiers.isNotEmpty) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Holding: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(_heldModifiers.join(" + ")),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: clearModifiers,
+                    child: const Text("Clear All"),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+          
           // Keyboard grid layout
           Column(
             children: [
-              // Top row
+              // Top row - Modifiers
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildModifierKey("Cmd"),
+                  _buildModifierKey("Option"),
+                  _buildModifierKey("^"),
+                  _buildModifierKey("Shift"),
+                ],
+              ),
+              const SizedBox(height: 10),
+              
+              // Function keys row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildKey("Esc", flex: 1),
-                  _buildKey("Shift", flex: 1),
                   _buildKey("Tab", flex: 1),
                   _buildKey("↑", flex: 1),
                   _buildKey("Backspace", flex: 2),
                 ],
               ),
               const SizedBox(height: 10),
-              // Middle row
+              
+              // Arrow keys row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildKey("Cmd", flex: 1),
-                  _buildKey("Option", flex: 1),
                   _buildKey("←", flex: 1),
                   _buildKey("↓", flex: 1),
                   _buildKey("→", flex: 1),
-                  _buildKey("^", flex: 1),
                 ],
               ),
               const SizedBox(height: 10),
+              
               // Bottom Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                _buildKey("Enter", flex: 1),
+                  _buildKey("Space", flex: 2),
+                  _buildKey("Enter", flex: 1),
                 ],
               ),
             ],
@@ -301,6 +392,38 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
           child: Text(
             keyText,
             style: const TextStyle(fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModifierKey(String keyText) {
+    bool isHeld = _heldModifiers.contains(_keyMapping[keyText]);
+    
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        child: ElevatedButton(
+          onPressed: () => pressKey(keyText),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            minimumSize: const Size(60, 40),
+            backgroundColor: isHeld 
+              ? Colors.blue.withOpacity(0.3) 
+              : const Color(0xFF1F1F1F),
+            side: isHeld 
+              ? const BorderSide(color: Colors.blue, width: 2)
+              : null,
+          ),
+          child: Text(
+            keyText,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isHeld ? FontWeight.bold : FontWeight.normal,
+              color: isHeld ? Colors.blue.shade300 : Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
         ),

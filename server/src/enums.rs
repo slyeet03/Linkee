@@ -71,6 +71,7 @@ pub enum KeyType {
     Tab,
     Up,
     Enter,
+    Cmd, 
 }
 
 #[derive(Subcommand)]

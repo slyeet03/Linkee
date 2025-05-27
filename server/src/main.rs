@@ -10,7 +10,6 @@ mod models;
 mod enums;
 
 // TODO: next media key does not work
-// TODO: add a way to hold modifier keys
 // TODO: add brightness controls
 
 #[tokio::main]
@@ -39,6 +38,9 @@ async fn main() {
         .route("/mouse/click", post(handlers::mouse::click_mouse))
         .route("/keyboard/type", post(handlers::keyboard::type_text))
         .route("/keyboard/press", post(handlers::keyboard::press_key))
+        .route("/keyboard/modifier", post(handlers::keyboard::handle_modifier))
+        .route("/keyboard/combo", post(handlers::keyboard::press_key_combo))
+        .route("/keyboard/clear-modifiers", post(handlers::keyboard::clear_all_modifiers))
         .route("/media/control", post(handlers::media::handle_media))
         .route("/volume/control", post(handlers::media::handle_volume));
 
