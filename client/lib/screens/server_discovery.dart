@@ -11,7 +11,7 @@ class ServerDiscoveryScreen extends StatefulWidget {
 }
 
 class _ServerDiscoveryScreenState extends State<ServerDiscoveryScreen> {
-  String _status = "Searching for server...";
+  String _status = "Searching for server(It can take some time)...";
   String? _serverIp;
   bool _manualInput = false;
   final TextEditingController _ipController = TextEditingController();

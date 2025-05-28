@@ -27,7 +27,7 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
     'Shift': 'Shift',
     'Tab': 'Tab',
     'Backspace': 'Backspace',
-    'Enter': 'Return',
+    'Enter': 'Enter',
     'Space': 'Space',
     'Del': 'Delete',
   };
@@ -145,7 +145,7 @@ class _KeyboardControlScreenState extends State<KeyboardControlScreen> {
                 children: [
                   _buildModifierKey("Cmd"),
                   _buildModifierKey("Option"),
-                  _buildModifierKey("^"),
+                  _buildModifierKey("Ctrl"),
                   _buildModifierKey("Shift"),
                 ],
               ),

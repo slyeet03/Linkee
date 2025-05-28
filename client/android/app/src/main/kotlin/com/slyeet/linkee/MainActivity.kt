@@ -1,4 +1,4 @@
-package com.example.client
+package com.slyeet.linkee
 
 import io.flutter.embedding.android.FlutterActivity
 
