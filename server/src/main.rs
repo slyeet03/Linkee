@@ -3,14 +3,11 @@ use std::net::SocketAddr;
 use axum::serve;
 use tokio::net::TcpListener;
 use socket2::{Socket, Domain, Type};
-use tracing_subscriber; 
+use tracing_subscriber;
 
 mod handlers;
 mod models;
 mod enums;
-
-// TODO: next media key does not work
-// TODO: add brightness controls
 
 #[tokio::main]
 async fn main() {
@@ -33,6 +30,7 @@ async fn main() {
     // Define routes
     let app = Router::new()
         .route("/", get(|| async { "Server is running!" }))
+        .route("/status", get(|| async { "OK" })) // Added missing status endpoint
         .route("/ping", get(|| async { "pong" }))
         .route("/mouse/move", post(handlers::mouse::move_mouse))
         .route("/mouse/click", post(handlers::mouse::click_mouse))

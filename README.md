@@ -1,6 +1,6 @@
-# 🖱️ Remote Mac Controller
+# 🖱Linkee
 
-A Flutter mobile app to control your Mac (mouse, keyboard, media, and volume) over local Wi-Fi using a Rust-based Axum server.
+A Flutter mobile app to control your Mac (mouse, keyboard, media, and volume) over local Wi-Fi using a Rust-based server.
 
 ## Structure
 
@@ -20,7 +20,6 @@ Make sure your Mac's IP is visible to your mobile device and they are on the sam
 
 ### 2. Run the Flutter Client
 
-Update the serverIp in main.dart (inside client/lib/) to match your Mac’s local IP address.
 ```bash
 cd client
 flutter run
