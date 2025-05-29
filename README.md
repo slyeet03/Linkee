@@ -85,7 +85,7 @@ A cross-platform remote control application that turns your mobile device into a
 - Ensure both **Linkee.app** are checked  
 - **Restart your Mac** after granting permissions
 
-## 🧰 Developer Info
+## Developer Info
 
 ### Server (Rust)
 - Axum, Tokio, Enigo, Serde, Tracing  
@@ -96,12 +96,6 @@ A cross-platform remote control application that turns your mobile device into a
 - Cross-platform (Android/iOS)  
 - Modular UI  
 - Uses HTTP + JSON for all communication
-
-## 🔧 Project Structure
-linkee/
-├── client/ # Flutter mobile app
-├── server/ # Rust server app (macOS .app output)
-└── README.md
 
 ## License
 
