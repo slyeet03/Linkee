@@ -2,16 +2,12 @@
 
 A cross-platform remote control application that turns your mobile device into a wireless mouse, keyboard, and media controller for your computer.
 
----
-
 ## Overview
 
 **Linkee** has two parts:
 
 - **Flutter Client**: A mobile app (Android APK) providing touch-based controls  
 - **Rust Server**: A lightweight native app (macOS `.app` in `.dmg`) that runs on your computer and receives commands
-
----
 
 ## Features
 
@@ -20,7 +16,7 @@ A cross-platform remote control application that turns your mobile device into a
 - Left, right, middle mouse button support
 - Smooth, responsive control with adjustable sensitivity
 
-### ⌨Keyboard Input
+### Keyboard Input
 - Full text typing
 - Special keys (arrows, function keys)
 - Modifier keys (Cmd, Ctrl, Alt, Shift) with visual state indicators
