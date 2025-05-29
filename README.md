@@ -2,174 +2,112 @@
 
 A cross-platform remote control application that turns your mobile device into a wireless mouse, keyboard, and media controller for your computer.
 
+---
+
 ## Overview
 
-Linkee consists of two components:
-- **Flutter Client**: A mobile app that provides touch-based controls
-- **Rust Server**: A lightweight server that runs on your computer and executes the commands
+**Linkee** has two parts:
 
-## Features
-
-### 🖱️ Mouse Control
-- Touch trackpad with gesture-based mouse movement
-- Left, right, and middle mouse button clicks
-- Smooth cursor control with adjustable sensitivity
-
-### ⌨️ Keyboard Input
-- Full text typing capability
-- Virtual keyboard with common keys (arrows, function keys, etc.)
-- Modifier key support (Cmd, Alt, Ctrl, Shift) with visual feedback
-- Key combinations and shortcuts
-
-### 🎵 Media Controls
-- Play/pause music and videos
-- Skip to next/previous track
-- Universal media key support
-
-### 🔊 Volume Control
-- Volume up/down controls
-- Mute/unmute toggle
-- System-level audio control
-
-### 🔍 Auto-Discovery
-- Automatic server detection on local network
-- Manual IP configuration fallback
-- Connection status monitoring
-
-## Architecture
-
-### Client (Flutter)
-- **Screens**: Modular UI with bottom navigation between Mouse, Keyboard, Media, and Volume controls
-- **Services**: Network communication and server discovery
-- **State Management**: Real-time UI updates and connection handling
-
-### Server (Rust)
-- **HTTP API**: RESTful endpoints for all control functions
-- **Cross-platform**: Uses `enigo` for system input simulation
-- **Efficient**: Lightweight server with minimal resource usage
-
-## API Endpoints
-
-### Mouse
-- `POST /mouse/move` - Move cursor to absolute coordinates
-- `POST /mouse/click` - Perform mouse clicks
-
-### Keyboard
-- `POST /keyboard/type` - Type text strings
-- `POST /keyboard/press` - Press individual keys
-- `POST /keyboard/combo` - Execute key combinations
-- `POST /keyboard/modifier` - Handle modifier key states
-
-### Media
-- `POST /media/control` - Control media playback (play/pause/next/prev)
-
-### Volume
-- `POST /volume/control` - Adjust system volume (up/down/mute)
-
-### System
-- `GET /status` - Health check endpoint
-- `GET /ping` - Connection test
-
-## Getting Started
-
-### Prerequisites
-- **Server**: Rust toolchain
-- **Client**: Flutter SDK
-- **Platform**: macOS, Windows, or Linux
-
-### Installation
-
-#### Server Setup
-1. Clone the repository
-2. Navigate to the server directory
-3. Build and run:
-   ```bash
-   cargo run
-   ```
-4. Server will start on `http://0.0.0.0:8000`
-
-#### Client Setup
-1. Navigate to the client directory
-2. Install dependencies:
-   ```bash
-   flutter pub get
-   ```
-3. Run the app:
-   ```bash
-   flutter run
-   ```
-
-### Usage
-1. Start the server on your computer
-2. Launch the mobile app
-3. The app will automatically discover and connect to the server
-4. If auto-discovery fails, manually enter your computer's IP address
-5. Use the bottom navigation to switch between control modes
-
-## Technical Details
-
-### Dependencies
-
-#### Server (Rust)
-- `axum` - Web framework for HTTP API
-- `enigo` - Cross-platform input simulation
-- `tokio` - Async runtime
-- `serde` - JSON serialization
-- `tracing` - Logging framework
-
-#### Client (Flutter)
-- `http` - HTTP client for server communication
-- `shared_preferences` - Local storage for settings
-
-### Network Protocol
-- Communication over HTTP REST API
-- JSON payloads for all requests
-- Default server port: 8000
-- Local network discovery via IP scanning
-
-### Platform Support
-- **Server**: macOS, Windows, Linux
-- **Client**: iOS, Android (Flutter cross-platform)
-
-## Project Structure
-
-```
-linkee/
-├── client/                 # Flutter mobile app
-│   ├── lib/
-│   │   ├── screens/       # UI screens
-│   │   ├── services/      # Network services
-│   │   └── main.dart      # App entry point
-│   └── pubspec.yaml
-├── server/                # Rust server
-│   ├── src/
-│   │   ├── handlers/      # API handlers
-│   │   ├── models.rs      # Data models
-│   │   └── main.rs        # Server entry point
-│   └── Cargo.toml
-└── README.md
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly on your target platforms
-5. Submit a pull request
-
-## License
-
-This project is open source. Please check the license file for details.
-
-## Troubleshooting
-
-### Connection Issues
-- Ensure both devices are on the same Wi-Fi network
-- Check firewall settings on the computer
-- Verify the server is running on port 8000
-- Try manual IP configuration if auto-discovery fails
+- **Flutter Client**: A mobile app (Android APK) providing touch-based controls  
+- **Rust Server**: A lightweight native app (macOS `.app` in `.dmg`) that runs on your computer and receives commands
 
 ---
 
-Transform your mobile device into the ultimate computer remote control with Linkee!
+## Features
+
+### Mouse Control
+- Touch trackpad with gesture-based movement
+- Left, right, middle mouse button support
+- Smooth, responsive control with adjustable sensitivity
+
+### ⌨Keyboard Input
+- Full text typing
+- Special keys (arrows, function keys)
+- Modifier keys (Cmd, Ctrl, Alt, Shift) with visual state indicators
+- Key combos and shortcuts
+
+### Media Controls
+- Play/Pause
+- Next/Previous track
+- Universal media key simulation
+
+### Volume Control
+- Volume up/down
+- Mute/unmute toggle
+
+### Auto-Discovery
+- Detects the server automatically on local Wi-Fi
+- Manual IP entry fallback
+- Real-time connection status
+
+---
+
+## Download
+
+### [Releases](https://github.com/slyeet03/linkee/releases)
+
+| Platform | File | Notes |
+|---------|------|-------|
+| **Android** | `linkee.apk` | Install on your mobile device |
+| **macOS** | `Linkee.dmg` | Mount and install the server |
+
+
+## Setup Instructions
+
+### On Your Mac
+
+1. Download `Linkee.dmg` from the releases section  
+2. Open and drag `Linkee.app` to your Applications folder  
+3. **Run `Linkee.app` — it will run in background and start the server**  
+4. On first run, macOS will ask for:  
+   - **Accessibility Permissions** – grant access to control mouse/keyboard  
+     - Go to: `System Settings > Privacy & Security > Accessibility`  
+     - Add both **Linkee.app**  
+   - **⚠️ Important:** After enabling, **restart your Mac**  
+5. The server will run on `http://<your-ip>:8000`
+
+> Note: The app may take a few seconds to appear as "connected" on the mobile app after starting the server — especially on first-time use.
+
+### On Your Android Device
+
+1. Install the `linkee.apk`  
+2. Open the app  
+3. Wait for auto-discovery to detect the server (can take ~5–10 seconds)  
+4. If that fails, manually enter your Mac’s IP address (shown in Terminal window when server runs)  
+5. You're good to go! Use the bottom navigation to switch between mouse, keyboard, media, and volume modes
+
+## Troubleshooting
+
+### Connection Issues?
+- Ensure both devices are on the **same Wi-Fi network**  
+- Restart both the app and the server  
+- Manually enter the IP if auto-discovery doesn’t work  
+- Check macOS firewall settings: allow incoming connections to `Linkee.app`
+
+### Accessibility Not Working?
+- Go to **System Settings > Privacy & Security > Accessibility**  
+- Ensure both **Linkee.app** are checked  
+- **Restart your Mac** after granting permissions
+
+## 🧰 Developer Info
+
+### Server (Rust)
+- Axum, Tokio, Enigo, Serde, Tracing  
+- HTTP-based REST API (port `8000`)  
+- Lightweight and async
+
+### Client (Flutter)
+- Cross-platform (Android/iOS)  
+- Modular UI  
+- Uses HTTP + JSON for all communication
+
+## 🔧 Project Structure
+linkee/
+├── client/ # Flutter mobile app
+├── server/ # Rust server app (macOS .app output)
+└── README.md
+
+## License
+
+Open source — see `LICENSE` file.
+
