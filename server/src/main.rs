@@ -55,6 +55,7 @@ async fn main() {
         .route("/keyboard/clear-modifiers", post(handlers::keyboard::clear_all_modifiers))
         .route("/media/control", post(handlers::media::handle_media))
         .route("/volume/control", post(handlers::media::handle_volume))
+        .route("/brightness/control", post(handlers::brightness::handle_brightness))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|request: &axum::http::Request<_>| {

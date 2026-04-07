@@ -13,6 +13,7 @@ pub enum Command {
     Keyboard(KeyboardCommands),
     Media(MediaCommands),
     Volume(VolumeCommands),
+    Brightness(BrightnessCommands),
 }
 
 #[derive(Args)]
@@ -37,6 +38,12 @@ pub struct MediaCommands {
 pub struct VolumeCommands {
     #[command(subcommand)]
     pub command: VolumeSubcommand,
+}
+
+#[derive(Args)]
+pub struct BrightnessCommands {
+    #[command(subcommand)]
+    pub command: BrightnessSubcommand,
 }
 
 #[derive(Subcommand)]
@@ -87,4 +94,10 @@ pub enum VolumeSubcommand {
     Up,
     Down,
     Mute,
+}
+
+#[derive(Subcommand)]
+pub enum BrightnessSubcommand {
+    Up,
+    Down,
 }

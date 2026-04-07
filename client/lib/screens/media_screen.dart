@@ -1,4 +1,3 @@
-// lib/screens/media_screen.dart
 import 'package:flutter/material.dart';
 import '../services/server_service.dart';
 

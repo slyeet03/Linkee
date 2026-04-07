@@ -77,6 +77,14 @@ class ServerService {
     );
   }
 
+  Future<void> brightnessControl(String action) async {
+    await http.post(
+      Uri.parse('http://$serverIp:8000/brightness/control'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'action': action}),
+    );
+  }
+
   Future<double> getVolume() async {
     try {
       final response = await http.get(

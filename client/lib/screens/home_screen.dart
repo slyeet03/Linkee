@@ -3,6 +3,7 @@ import 'mouse_screen.dart';
 import 'keyboard_screen.dart';
 import 'media_screen.dart';
 import 'volume_screen.dart';
+import 'brightness_screen.dart';
 
 class UnifiedHomeScreen extends StatefulWidget {
   final String serverIp;
@@ -21,6 +22,7 @@ class _UnifiedHomeScreenState extends State<UnifiedHomeScreen> {
     KeyboardControlScreen(serverIp: widget.serverIp),
     MediaControlScreen(serverIp: widget.serverIp),
     VolumeControlScreen(serverIp: widget.serverIp),
+    BrightnessControlScreen(serverIp: widget.serverIp),
   ];
 
   final List<String> _titles = const [
@@ -28,6 +30,7 @@ class _UnifiedHomeScreenState extends State<UnifiedHomeScreen> {
     "Keyboard",
     "Media",
     "Volume",
+    "Brightness",
   ];
 
   @override
@@ -51,6 +54,7 @@ class _UnifiedHomeScreenState extends State<UnifiedHomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.keyboard), label: "Keyboard"),
           BottomNavigationBarItem(icon: Icon(Icons.music_note), label: "Media"),
           BottomNavigationBarItem(icon: Icon(Icons.volume_up), label: "Volume"),
+          BottomNavigationBarItem(icon: Icon(Icons.brightness_high), label: "Brightness"),
         ],
         onTap: (index) {
           setState(() {

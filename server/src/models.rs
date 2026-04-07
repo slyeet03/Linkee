@@ -43,3 +43,8 @@ pub struct MediaPayload {
 pub struct VolumePayload {
     pub action: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct BrightnessPayload {
+    pub action: String,
+}
