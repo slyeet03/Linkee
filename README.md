@@ -2,6 +2,22 @@
 
 A cross-platform remote control application that turns your mobile device into a wireless mouse, keyboard, and media controller for your computer.
 
+## Screenshots
+
+## Screenshots
+
+<p align="center">
+  <img src="assets/1.jpeg" width="30%" />
+  <img src="assets/2.jpeg" width="30%" />
+  <img src="assets/3.jpeg" width="30%" />
+</p>
+
+<p align="center">
+  <img src="assets/4.jpeg" width="30%" />
+  <img src="assets/5.jpeg" width="30%" />
+  <img src="assets/6.jpeg" width="30%" />
+</p>
+
 ## Overview
 
 **Linkee** has two parts:
