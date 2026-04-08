@@ -4,8 +4,6 @@ A cross-platform remote control application that turns your mobile device into a
 
 ## Screenshots
 
-## Screenshots
-
 <p align="center">
   <img src="assets/1.jpeg" width="30%" />
   <img src="assets/2.jpeg" width="30%" />
